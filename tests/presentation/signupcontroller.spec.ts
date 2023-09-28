@@ -20,7 +20,7 @@ const makeCreateAccountSpy = (): ICreateAccount => {
 }
 const makeValidationSpy = (): IValidation => {
   class ValidationSpy implements IValidation {
-    validate (input: any): any {
+    validate (input: any): Error {
       return null
     }
   }
@@ -54,7 +54,7 @@ describe('SignUp Controller', () => {
         name: 'any_name',
         email: 'any_email@mail.com',
         password: 'any_password',
-        passwordConfirmation: 'any_password'
+        passwordConfirmation: 'any_passwordConfirmation'
       }
     }
     await sut.handle(httpRequest)
@@ -77,7 +77,7 @@ describe('SignUp Controller', () => {
         name: 'any_name',
         email: 'any_email@mail.com',
         password: 'any_password',
-        passwordConfirmation: 'any_password'
+        passwordConfirmation: 'any_passwordConfirmation'
       }
     }
     const httpResponse: HttpResponse = await sut.handle(httpRequest)
@@ -92,14 +92,30 @@ describe('SignUp Controller', () => {
         name: 'any_name',
         email: 'any_email@mail.com',
         password: 'any_password',
-        passwordConfirmation: 'any_password'
+        passwordConfirmation: 'any_passwordConfirmation'
       }
     }
     await sut.handle(httpRequest)
     expect(validateSpy).toHaveBeenCalledWith({
       name: 'any_name',
       email: 'any_email@mail.com',
-      password: 'any_password'
+      password: 'any_password',
+      passwordConfirmation: 'any_passwordConfirmation'
     })
+  })
+
+  test('Must return 400 if validation fails',async () => {
+    const { sut, validationSpy } = makeSut()
+    jest.spyOn(validationSpy, 'validate').mockReturnValueOnce(new Error())
+    const httpRequest: HttpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        password: 'any_password',
+        passwordConfirmation: 'any_passwordConfirmation'
+      }
+    }
+    const httpReponse = await sut.handle(httpRequest)
+    expect(httpReponse.statusCode).toEqual(400)
   })
 })
