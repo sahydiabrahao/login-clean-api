@@ -2,8 +2,8 @@
 
 ## SignUpController
 
-Must call createAccount with correct values
-Must return 500 if createAccount fails
+✅Must call createAccount with correct values
+✅Must return 500 if createAccount fails
 Must call validation with correct values
 Must return 500 if validation fails
 Must return 200 on success
