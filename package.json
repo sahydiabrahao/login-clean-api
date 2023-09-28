@@ -9,6 +9,8 @@
   "author": "Sahydi Abrahão",
   "license": "ISC",
   "devDependencies": {
-    "git-commit-msg-linter": "^5.0.4"
+    "@types/node": "^20.7.1",
+    "git-commit-msg-linter": "^5.0.4",
+    "typescript": "^5.2.2"
   }
 }
