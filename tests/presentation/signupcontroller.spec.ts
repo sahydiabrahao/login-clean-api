@@ -8,10 +8,10 @@ const makeCreateAccountSpy = (): ICreateAccount => {
     async create (account: IAccountModel): Promise<any> {
       return new Promise(resolve => {
         resolve({
-          name: 'any_name',
-          email: 'any_email@mail.com',
-          password: 'any_password',
-          passwordConfirmation: 'any_password'
+          id: 'valid_id',
+          name: 'valid_name',
+          email: 'valid_email@mail.com',
+          password: 'valid_password'
         })
       })
     }
@@ -117,5 +117,28 @@ describe('SignUp Controller', () => {
     }
     const httpReponse = await sut.handle(httpRequest)
     expect(httpReponse.statusCode).toEqual(400)
+  })
+
+  test('Must return 200 and account with ID on success',async () => {
+    const { sut } = makeSut()
+    const httpRequest: HttpRequest = {
+      body: {
+        name: 'valid_name',
+        email: 'valid_email@mail.com',
+        password: 'valid_password',
+        passwordConfirmation: 'valid_passwordConfirmation'
+      }
+    }
+    const httpReponse = await sut.handle(httpRequest)
+    expect(httpReponse).toEqual({
+      statusCode: 200,
+      body: {
+        id: 'valid_id',
+        name: 'valid_name',
+        email: 'valid_email@mail.com',
+        password: 'valid_password'
+      }
+    }
+    )
   })
 })
