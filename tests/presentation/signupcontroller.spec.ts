@@ -1,5 +1,6 @@
 import { type IAccountModel, type ICreateAccount } from '@/domain/i-create-account'
 import { SignUpController } from '@/presentation/signup-controller'
+import { type HttpRequest, type HttpResponse } from './protocols'
 
 const makeCreateAccountSpy = (): ICreateAccount => {
   class CreateAccountSpy implements ICreateAccount {
@@ -35,8 +36,7 @@ describe('SignUp Controller', () => {
   test('Must call createAccount with correct values',async () => {
     const { sut, createAccountSpy } = makeSut()
     const createSpy = jest.spyOn(createAccountSpy, 'create')
-    const request = {
-      statusCode: 200,
+    const httpRequest: HttpRequest = {
       body: {
         name: 'any_name',
         email: 'any_email@mail.com',
@@ -44,7 +44,7 @@ describe('SignUp Controller', () => {
         passwordConfirmation: 'any_password'
       }
     }
-    await sut.handle(request)
+    await sut.handle(httpRequest)
     expect(createSpy).toHaveBeenCalledWith(
       {
         name: 'any_name',
@@ -52,5 +52,22 @@ describe('SignUp Controller', () => {
         password: 'any_password'
       }
     )
+  })
+
+  test('Must return 500 if createAccount fails',async () => {
+    const { sut, createAccountSpy } = makeSut()
+    jest.spyOn(createAccountSpy, 'create').mockImplementationOnce(async () => {
+      return new Promise((resolve, reject) => { reject(new Error()) })
+    })
+    const httpRequest: HttpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        password: 'any_password',
+        passwordConfirmation: 'any_password'
+      }
+    }
+    const httpResponse: HttpResponse = await sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toEqual(500)
   })
 })
