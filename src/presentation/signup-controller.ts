@@ -11,8 +11,13 @@ export class SignUpController implements IController {
     try {
       const { name, email, password } = httpRequest.body
 
-      this.validation.validate({ name, email, password })
-
+      const error = this.validation.validate(httpRequest.body)
+      if (error) {
+        return {
+          statusCode: 400,
+          body: ''
+        }
+      }
       const account = await this.createAccount.create({ name, email, password })
       return {
         statusCode: 200,
