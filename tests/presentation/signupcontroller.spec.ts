@@ -1,6 +1,7 @@
 import { type IAccountModel, type ICreateAccount } from '@/domain/i-create-account'
 import { SignUpController } from '@/presentation/signup-controller'
 import { type HttpRequest, type HttpResponse } from './protocols'
+import { type IValidation } from '@/utils/i-validation'
 
 const makeCreateAccountSpy = (): ICreateAccount => {
   class CreateAccountSpy implements ICreateAccount {
@@ -17,18 +18,30 @@ const makeCreateAccountSpy = (): ICreateAccount => {
   }
   return new CreateAccountSpy()
 }
+const makeValidationSpy = (): IValidation => {
+  class ValidationSpy implements IValidation {
+    validate (input: any): any {
+      return null
+    }
+  }
+  return new ValidationSpy()
+}
 
 type SutTypes = {
   sut: SignUpController
   createAccountSpy: ICreateAccount
+  validationSpy: IValidation
 }
 
 const makeSut = (): SutTypes => {
+  const validationSpy = makeValidationSpy()
   const createAccountSpy = makeCreateAccountSpy()
-  const sut = new SignUpController(createAccountSpy)
+  const sut = new SignUpController(createAccountSpy, validationSpy)
   return {
     sut,
-    createAccountSpy
+    createAccountSpy,
+    validationSpy
+
   }
 }
 
@@ -69,5 +82,24 @@ describe('SignUp Controller', () => {
     }
     const httpResponse: HttpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toEqual(500)
+  })
+
+  test('Must call validation with correct values',async () => {
+    const { sut, validationSpy } = makeSut()
+    const validateSpy = jest.spyOn(validationSpy, 'validate')
+    const httpRequest: HttpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        password: 'any_password',
+        passwordConfirmation: 'any_password'
+      }
+    }
+    await sut.handle(httpRequest)
+    expect(validateSpy).toHaveBeenCalledWith({
+      name: 'any_name',
+      email: 'any_email@mail.com',
+      password: 'any_password'
+    })
   })
 })
