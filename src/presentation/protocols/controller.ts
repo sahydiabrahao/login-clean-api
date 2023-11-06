@@ -1,5 +1,5 @@
-import { type HttpRequest, type HttpResponse } from './http'
+import { type HttpResponse, type HttpRequest } from '@/presentation/protocols/http'
 
-export interface IController {
+export interface Controller {
   handle: (httpRequest: HttpRequest) => Promise<HttpResponse>
 }

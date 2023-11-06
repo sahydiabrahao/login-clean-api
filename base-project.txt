@@ -1,0 +1,17 @@
+$ git init														.gitignore README.md
+$ npm init -y													chore: add npm
+$ npm i -D git-commit-msg-linter
+$ npm i -D typescript @types/node								.tsconfig.json
+$ npm i -D eslint												.eslintrc.json .eslintignore
+$ npm i -D eslint-config-standard-with-typescript@latest 
+$ npm i -D eslint-plugin-import eslint-plugin-node eslint-plugin-promise eslint-plugin-n@^15.0.0
+$ npm i -D @typescript-eslint/eslint-plugin
+$ npm i -D jest @types/jest ts-jest								jest.config.js jest.unit.config.js jest.integration.config. [config jest scripts]
+$ npm i -D lint-staged											.lintstagedrc.json
+$ npm i -D husky												.husky
+
+$ npm i validator	
+$ npm i bcrypt
+$ npm i -D @types/bcrypt
+$ npm i mongodb													jest.config.js 				[preset: '@shelf/jest-mongodb']
+$ npm i -D @shelf/jest-mongodb @types/mongodb					jest-mongodb-config.js		*test mongo in memory
